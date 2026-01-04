@@ -9,13 +9,13 @@ from cs336_alignment.drgrpo_grader import r1_zero_reward_fn
 
 
 def evaluate_vllm(
-vllm_model: LLM,
-reward_fn: Callable[[str, str], dict[str, float]],
-prompts: List[str],
-answers: List[str], 
-eval_sampling_params: SamplingParams,
-output_path: str
-) -> None:
+        vllm_model: LLM,
+        reward_fn: Callable[[str, str], dict[str, float]],
+        prompts: List[str],
+        answers: List[str],
+        eval_sampling_params: SamplingParams,
+        output_path: str
+    ) -> None:
     """
     Evaluate a language model on a list of prompts,
     compute evaluation metrics, and serialize results to disk.
@@ -37,14 +37,8 @@ output_path: str
         results_list.append(output_dict)
     
     results_df = pd.DataFrame(results_list)
-    results_df.to_json(output_path, orient="records", lines=True)
+    results_df.to_csv(output_path)
     print(f"Evaluated {len(outputs)} prompts and saved results to {output_path}")
-    print(f"Average reward: {results_df['reward'].mean()}")
-    print(f"Average format reward: {results_df['format_reward'].mean()}")
-    print(f"Average answer reward: {results_df['answer_reward'].mean()}")
-    print(f"Number of correct answers: {results_df['reward'].sum()}")
-    print(f"Number of answers that are formatted correctly but incorrect: {results_df['format_reward'].sum()} - {results_df['reward'].sum()}")
-    print(f"Number of incorrectly formatted answers: {len(results_df) - results_df['format_reward'].sum()}")
 
 
 
@@ -56,9 +50,9 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-name-or-path", type=str, default="Qwen/Qwen2.5-Math-1.5B")
-    parser.add_argument("--prompt-path", type=str, default="cs336_alignment/prompts/r1_zero.txt")
+    parser.add_argument("--prompt-path", type=str, default="cs336_alignment/prompts/r1_zero.prompt")
     parser.add_argument("--input-path", type=str, default="data/gsm8k/test.jsonl")
-    parser.add_argument("--output-path", type=str, default="data/gsm8k/test_results.jsonl")
+    parser.add_argument("--output-path", type=str, default="data/gsm8k/test_results.csv")
     args = parser.parse_args()
 
     # Resolve paths: if relative, make them relative to project root; if absolute, use as-is
